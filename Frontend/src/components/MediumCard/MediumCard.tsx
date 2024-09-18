@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { MainCardWrapper, NewsPicture, InfoContainer, Title, BottomInfo, Publisher, PublisherName, PublisherIcon, NewsTime, NewsDate } from './BigCard.styled.ts';
+import { MediumCardWrapper, NewsPicture, InfoContainer, Title, BottomInfo, Publisher, PublisherName, PublisherIcon, NewsTime, NewsDate } from './MediumCard.styled.ts';
 
 interface News {
    id: number;
@@ -11,12 +11,12 @@ interface News {
    publishDate: string;
 }
 
-interface MainCardProps {
+interface CardProps {
    news: News;
    onClick?: () => void;
 }
 
-const MainCard: FC<MainCardProps> = ({ news, onClick }) => {
+const Card: FC<CardProps> = ({ news, onClick }) => {
    const formattedDate = new Date(news.publishDate).toLocaleDateString();
    const formattedTime = new Date(news.publishDate).toLocaleTimeString([], {
       hour: '2-digit',
@@ -24,7 +24,7 @@ const MainCard: FC<MainCardProps> = ({ news, onClick }) => {
    });
 
    return (
-      <MainCardWrapper onClick={onClick}>
+      <MediumCardWrapper onClick={onClick} >
          <NewsPicture style={{ backgroundImage: `url(${news.image})` }} />
          <InfoContainer>
             <Title>{news.title}</Title>
@@ -37,8 +37,8 @@ const MainCard: FC<MainCardProps> = ({ news, onClick }) => {
                <NewsDate>{formattedDate}</NewsDate>
             </BottomInfo>
          </InfoContainer>
-      </MainCardWrapper>
+      </MediumCardWrapper>
    );
 };
 
-export default MainCard;
+export default Card;

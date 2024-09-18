@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { MainCardWrapper, NewsPicture, InfoContainer, Title, BottomInfo, Publisher, PublisherName, PublisherIcon, NewsTime, NewsDate } from './BigCard.styled.ts';
+import { MainCardWrapper, NewsPicture, NewsContent, Title, BottomInfo, Publisher, PublisherName, PublisherIcon, NewsTime, NewsDate } from './OpenedCard.styled.ts';
 
 interface News {
    id: number;
@@ -16,7 +16,7 @@ interface MainCardProps {
    onClick?: () => void;
 }
 
-const MainCard: FC<MainCardProps> = ({ news, onClick }) => {
+const MainCard: FC<MainCardProps> = ({ news }) => {
    const formattedDate = new Date(news.publishDate).toLocaleDateString();
    const formattedTime = new Date(news.publishDate).toLocaleTimeString([], {
       hour: '2-digit',
@@ -24,19 +24,18 @@ const MainCard: FC<MainCardProps> = ({ news, onClick }) => {
    });
 
    return (
-      <MainCardWrapper onClick={onClick}>
-         <NewsPicture style={{ backgroundImage: `url(${news.image})` }} />
-         <InfoContainer>
-            <Title>{news.title}</Title>
-            <BottomInfo>
+      <MainCardWrapper>
+         <Title>{news.title}</Title>
+         <BottomInfo>
                <Publisher>
                   <PublisherIcon style={{ backgroundImage: `url(${news.publisherIcon})` }} />
                   <PublisherName>{news.publisher}</PublisherName>
                   <NewsTime>{formattedTime}</NewsTime>
+                  <NewsDate>{formattedDate}</NewsDate>
                </Publisher>
-               <NewsDate>{formattedDate}</NewsDate>
             </BottomInfo>
-         </InfoContainer>
+         <NewsPicture style={{ backgroundImage: `url(${news.image})` }} />
+         <NewsContent>{news.content}</NewsContent>
       </MainCardWrapper>
    );
 };

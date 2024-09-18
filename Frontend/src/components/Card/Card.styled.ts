@@ -4,6 +4,8 @@ export const CardWrapper = styled.div`
 width: 544px;
 display: flex;
 justify-content: space-between;
+user-select: none;
+cursor: pointer;
 `;
 
 export const InfoContainer = styled.div`
@@ -31,6 +33,7 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 export const BottomInfo = styled.div`
 display: flex; 
 justify-content: space-between;
+align-items: center;
 `;
 
 export const PublisherIcon = styled.div`
@@ -50,6 +53,7 @@ font-size: 90%;
 
 export const NewsDate = styled.p`
 margin: 0;
+font-size: 80%;
 `;
 
 export const PublisherName = styled.p`
@@ -60,5 +64,6 @@ font-weight: 500;
 export const Publisher= styled.div`
 display: flex;
 align-items: center;
+font-size: 80%;
 `;
 

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 export const MainPageWrapper = styled.div`
+font-family: 'Montserrat', sans-serif;
 `;
 
 export const HeaderContainer = styled.div`
@@ -25,7 +26,10 @@ align-items: center;
 export const LanguageOption = styled.h3`
 margin: 0;
 margin-left: 4px;
-font-weight: 500;
+font-weight: 700;
+padding: 0 2px 0 2px;
+user-select: none;
+cursor: pointer;
 `;
 
 export const OlioLogo = styled.h2`
@@ -58,6 +62,12 @@ justify-content: center;
 export const NewsTitle = styled.h1`
 margin: 32px 0 22px 0;
 font-size: 240%;
+font-weight: 700;
+`;
+
+export const SmallNewsTitle = styled.h1`
+margin: 32px 0 22px 0;
+font-size: 140%;
 `;
 
 export const GreenText = styled.span`
@@ -97,14 +107,15 @@ color: white;
 export const FooterContainer = styled.div`
 display: flex;
 width: 1120px;
-justify-content: space-between;
 padding: 12px 0 22px 0;
+justify-content: space-between;
 `;
 
 export const ContactsColumn = styled.div`
 display: flex;
 flex-direction: column;
 align-items: center;
+margin-left: 120px;
 `;
 
 export const PolicyColumn = styled.div`
@@ -119,11 +130,14 @@ display: flex;
 flex-direction: column;
 align-items: center;
 margin-top: 16px;
+margin-right: 120px;
 `;
 
 export const FooterLink = styled.div`
 margin-top: 16px;
 color: #FFFFFF;
+user-select: none;
+cursor: pointer;
 `;
 
 export const BottomFooterText = styled.div`
@@ -140,12 +154,30 @@ display: flex;
 flex-direction: column;
 align-items: center;
 margin-top: 22px;
+cursor: pointer;
 `;
 
 export const DownloadText = styled.div`
 font-size: 60%;
+user-select: none;
 `;
 
 export const AppIcon = styled.div`
 font-size: 120%;
+`;
+
+export const OpenedNews = styled.div`
+width: 100%;
+display: flex;
+justify-content: center;
+`;
+
+export const OpenedNewsContainer = styled.div`
+margin-top: 48px;
+width: 1120px;
+display: flex;
+justify-content: space-between;
+`;
+
+export const OpenedNewsRightSide = styled.div`
 `;

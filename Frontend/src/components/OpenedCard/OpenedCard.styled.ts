@@ -1,17 +1,7 @@
 import styled from 'styled-components';
 
 export const MainCardWrapper = styled.div`
-width: 544px;
-height: 472px;
-user-select: none;
-cursor: pointer;
-`;
-
-export const InfoContainer = styled.div`
-display: flex;
-flex-direction: column;
-justify-content: space-between;
-height: 156px;
+width: 640px;
 `;
 
 export const Title = styled.h1`
@@ -20,8 +10,8 @@ font-size: 220%;
 `;
 
 export const NewsPicture = styled.div`
-height: 316px;
-width: 544px;
+height: 371px;
+width: 640px;
 border-radius: 16px;
 background-size: cover;
 background-position: center;
@@ -35,9 +25,8 @@ justify-content: space-between;
 `;
 
 export const PublisherIcon = styled.div`
-height: 42px;
-width: 42px;
-margin-right: 4px;
+height: 25px;
+width: 25px;
 border-radius: 100%;
 background-size: cover;
 background-position: center;
@@ -52,6 +41,7 @@ font-size: 90%;
 
 export const NewsDate = styled.p`
 margin: 0;
+margin-left: 16px;
 `;
 
 export const PublisherName = styled.p`
@@ -62,5 +52,11 @@ font-weight: 500;
 export const Publisher = styled.div`
 display: flex;
 align-items: center;
+margin: 12px 0 12px 0;
+font-size: 80%;
+`;
+
+export const NewsContent = styled.p`
+margin-top: 26px;
 `;
 

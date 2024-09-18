@@ -13,9 +13,10 @@ interface News {
 
 interface CardProps {
    news: News;
+   onClick?: () => void;
 }
 
-const Card: FC<CardProps> = ({ news }) => {
+const Card: FC<CardProps> = ({ news, onClick }) => {
    const formattedDate = new Date(news.publishDate).toLocaleDateString();
    const formattedTime = new Date(news.publishDate).toLocaleTimeString([], {
       hour: '2-digit',
@@ -23,7 +24,7 @@ const Card: FC<CardProps> = ({ news }) => {
    });
 
    return (
-      <CardWrapper>
+      <CardWrapper onClick={onClick}>
          <NewsPicture style={{ backgroundImage: `url(${news.image})` }} />
          <InfoContainer>
             <Title>{news.title}</Title>
@@ -39,4 +40,5 @@ const Card: FC<CardProps> = ({ news }) => {
       </CardWrapper>
    );
 };
+
 export default Card;
