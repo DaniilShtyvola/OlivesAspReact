@@ -34,15 +34,25 @@ namespace OilNewsAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(News news)
         {
-            await _newsRepository.CreateAsync(news);
-            return CreatedAtAction(nameof(GetById), new { id = news.Id }, news);
+            if (string.IsNullOrEmpty(news.Title) || string.IsNullOrEmpty(news.Content))
+                return BadRequest("Title and Content are required.");
+
+            news.PublishDate = DateTime.Now;
+            int newId = await _newsRepository.CreateAsync(news);
+            news.Id = newId;
+
+            return CreatedAtAction(nameof(GetById), new { id = newId }, news);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, News news)
         {
-            if (id != news.Id)
-                return BadRequest();
+
+            var news2 = await _newsRepository.GetByIdAsync(id);
+
+            news.PublishDate = news2.PublishDate;
+            news.Id = news2.Id;
+
             await _newsRepository.UpdateAsync(news);
             return NoContent();
         }
@@ -64,7 +74,8 @@ namespace OilNewsAPI.Controllers
             }
 
             news.PublishDate = DateTime.Now;
-            await _newsRepository.CreateAsync(news);
+            int newId = await _newsRepository.CreateAsync(news);
+            news.Id = newId;
 
             return CreatedAtAction(nameof(GetById), new { id = news.Id }, news);
         }
