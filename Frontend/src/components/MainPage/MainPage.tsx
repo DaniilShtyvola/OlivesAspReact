@@ -1,18 +1,42 @@
 import React, { useState, useEffect, FC } from 'react';
 import axios from 'axios';
-import { MainPageWrapper, OpenedNewsContainer, SmallNewsTitle, OpenedNewsRightSide, NewsFeedCardsContainer, OpenedNews, HeaderContainer, NewsRightSide, TodayNewsCardsContainer, Header, SelectLanguage, LanguageOption, OlioLogo, LoginButton, News, NewsContainer, NewsTitle, GreenText, Footer, FooterContainer, AppsColumn, PolicyColumn, ContactsColumn, FooterLink, BottomFooterText, AppButton, DownloadText, AppIcon } from './MainPage.styled.ts';
+import {
+   MainPageWrapper,
+   OpenedNewsContainer,
+   SmallNewsTitle,
+   OpenedNewsRightSide,
+   NewsFeedCardsContainer,
+   OpenedNews,
+   HeaderContainer,
+   NewsRightSide,
+   TodayNewsCardsContainer,
+   Header,
+   SelectLanguage,
+   LanguageOption,
+   OlioLogo,
+   News,
+   NewsContainer,
+   NewsTitle,
+   GreenText,
+   Footer,
+   FooterContainer,
+   AppsColumn,
+   PolicyColumn,
+   ContactsColumn,
+   FooterLink,
+   BottomFooterText,
+   AppButton,
+   DownloadText,
+   AppIcon
+} from './MainPage.styled.ts';
 
-import AppStoreIcon from '../../icons/AppStoreIcon.tsx';
-import GooglePlayIcon from '../../icons/GooglePlayIcon.tsx';
-import PlanetIcon from '../../icons/PlanetIcon.tsx';
-import UserIcon from '../../icons/UserIcon.tsx';
-
-import Card from '../Card/Card.tsx';
-import BigCard from '../BigCard/BigCard.tsx';
-import OpenedCard from '../OpenedCard/OpenedCard.tsx';
-import MediumCard from '../MediumCard/MediumCard.tsx';
+import { AppStoreIcon, GooglePlayIcon, UserIcon, PlanetIcon } from '../Icons/Icons.tsx';
+import { OpenedCard, BigCard, MediumCard, DefaultCard } from '../Cards/Cards.tsx';
+import LoginModal from '../LoginModal/LoginModal.tsx';
 
 import newsData from '../news.json';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface MainPageProps { }
 
@@ -34,18 +58,18 @@ const MainPage: FC<MainPageProps> = () => {
    const [openedNews, setOpenedNews] = useState<NewsItem | null>(null);
 
    const [currentLanguage, setCurrentLanguage] = useState<string>('EN');
+   const [showLoginModal, setShowLoginModal] = useState(false);
 
    useEffect(() => {
       const fetchNews = async () => {
          try {
-            const items = newsData as NewsItem[];
-
-            /*const response = await axios.get<NewsItem[]>('../news.json', {
+            const response = await axios.get('http://aspsmarteroil1-001-site1.ktempurl.com/api/news', {
                headers: {
-                  Authorization: `Bearer ${token}`,
-               },
-            });
-            const items = response.data;*/
+                  "Authorization": 'Basic MTExOTU2OTk6NjAtZGF5ZnJlZXRyaWFs'
+               }
+            })
+
+            const items = response.data as NewsItem[];
 
             const bigCard = items.length > 0 ? items[0] : null;
             const todayNewsCards = items.slice(1, 4);
@@ -74,6 +98,10 @@ const MainPage: FC<MainPageProps> = () => {
       setOpenedNews(null);
    };
 
+   const handleShowLogin = () => setShowLoginModal(true);
+
+   const handleCloseLogin = () => setShowLoginModal(false);
+
    return (
       <MainPageWrapper>
          <Header>
@@ -84,12 +112,11 @@ const MainPage: FC<MainPageProps> = () => {
                      onClick={() => handleLanguageChange('EN')}
                      style={{
                         color: currentLanguage === 'EN' ? '#73843D' : 'black',
-                         borderBottom: currentLanguage === 'EN' ? '2px #73843D solid' : '2px white solid'
+                        borderBottom: currentLanguage === 'EN' ? '2px #73843D solid' : '2px white solid'
                      }}
                   >
                      EN
                   </LanguageOption>
-
                   <LanguageOption
                      onClick={() => handleLanguageChange('УК')}
                      style={{
@@ -101,7 +128,7 @@ const MainPage: FC<MainPageProps> = () => {
                   </LanguageOption>
                </SelectLanguage>
                <OlioLogo onClick={handleLogoClick} style={{ userSelect: "none", cursor: "pointer" }}>vivoolio.today</OlioLogo>
-               <UserIcon />
+               <UserIcon onClick={handleShowLogin} />
             </HeaderContainer>
          </Header>
          {openedNews ? (
@@ -136,7 +163,7 @@ const MainPage: FC<MainPageProps> = () => {
                         )}
                         <NewsRightSide>
                            {todayNews.map(item => (
-                              <Card
+                              <DefaultCard
                                  key={item.id}
                                  news={item}
                                  onClick={() => handleCardClick(item)}
@@ -147,7 +174,7 @@ const MainPage: FC<MainPageProps> = () => {
                      <NewsTitle>News <GreenText>feed</GreenText></NewsTitle>
                      <NewsFeedCardsContainer>
                         {newsFeed.map(item => (
-                           <Card
+                           <DefaultCard
                               key={item.id}
                               news={item}
                               onClick={() => handleCardClick(item)}
@@ -185,6 +212,7 @@ const MainPage: FC<MainPageProps> = () => {
                </AppsColumn>
             </FooterContainer>
          </Footer>
+         <LoginModal show={showLoginModal} handleClose={handleCloseLogin} />
       </MainPageWrapper>
    );
 };
