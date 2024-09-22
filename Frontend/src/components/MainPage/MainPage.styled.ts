@@ -291,3 +291,9 @@ height: 1px;
 background-color: #BDBDBD;
 margin: 0 12px 0 12px;
 `;
+
+export const HeaderIconsContainer = styled.div`
+display: flex;
+cursor: pointer;
+`;
+

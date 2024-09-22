@@ -27,14 +27,19 @@ import {
    BottomFooterText,
    AppButton,
    DownloadText,
-   AppIcon
+   AppIcon,
+   HeaderIconsContainer
 } from './MainPage.styled.ts';
 
 import { AppStoreIcon, GooglePlayIcon, UserIcon, PlanetIcon } from '../Icons/Icons.tsx';
 import { OpenedCard, BigCard, MediumCard, DefaultCard } from '../Cards/Cards.tsx';
 import LoginModal from '../LoginModal/LoginModal.tsx';
+import AdminPanel from '../AdminPanel/AdminPanel.tsx';
 
 import newsData from '../news.json';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faScrewdriverWrench } from '@fortawesome/free-solid-svg-icons'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -56,6 +61,7 @@ const MainPage: FC<MainPageProps> = () => {
    const [newsFeed, setNewsFeed] = useState<NewsItem[]>([]);
 
    const [openedNews, setOpenedNews] = useState<NewsItem | null>(null);
+   const [adminPanel, setAdminPanel] = useState(false);
 
    const [currentLanguage, setCurrentLanguage] = useState<string>('EN');
    const [showLoginModal, setShowLoginModal] = useState(false);
@@ -70,6 +76,8 @@ const MainPage: FC<MainPageProps> = () => {
             })
 
             const items = response.data as NewsItem[];
+
+            //const items = newsData as NewsItem[];
 
             const bigCard = items.length > 0 ? items[0] : null;
             const todayNewsCards = items.slice(1, 4);
@@ -96,6 +104,11 @@ const MainPage: FC<MainPageProps> = () => {
 
    const handleLogoClick = () => {
       setOpenedNews(null);
+      setAdminPanel(false);
+   };
+
+   const handleAdminPanel = () => {
+      setAdminPanel(true);
    };
 
    const handleShowLogin = () => setShowLoginModal(true);
@@ -128,10 +141,13 @@ const MainPage: FC<MainPageProps> = () => {
                   </LanguageOption>
                </SelectLanguage>
                <OlioLogo onClick={handleLogoClick} style={{ userSelect: "none", cursor: "pointer" }}>vivoolio.today</OlioLogo>
-               <UserIcon onClick={handleShowLogin} />
+               <HeaderIconsContainer>
+                  <FontAwesomeIcon onClick={handleAdminPanel} style={{ color: "#73843D", fontSize: "160%", marginRight: "18px"}} icon={faScrewdriverWrench} />
+                  <UserIcon onClick={handleShowLogin}/>
+               </HeaderIconsContainer>
             </HeaderContainer>
          </Header>
-         {openedNews ? (
+         {openedNews && !adminPanel ? (
             <OpenedNews>
                <OpenedNewsContainer>
                   <OpenedCard
@@ -149,7 +165,8 @@ const MainPage: FC<MainPageProps> = () => {
                   </OpenedNewsRightSide>
                </OpenedNewsContainer>
             </OpenedNews>
-         ) : (
+         ) : null }
+         {!openedNews && !adminPanel ? (
             <>
                <News>
                   <NewsContainer>
@@ -184,7 +201,10 @@ const MainPage: FC<MainPageProps> = () => {
                   </NewsContainer>
                </News>
             </>
-         )}
+         ) : null}
+         {adminPanel ? (
+            <AdminPanel/>
+         ) : null}
          <Footer>
             <FooterContainer>
                <ContactsColumn>
