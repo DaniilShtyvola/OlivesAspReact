@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
    LoginModalCloseContainer,
    LoginModalCloseButton,
@@ -16,11 +17,12 @@ import {
    LoginModalPasswordInputConfirm
 } from './LoginModal.styled.ts';
 
-import { AppleIcon, GoogleIcon, CloseIcon } from '../Icons/Icons.tsx';
+import { AppleIcon, GoogleIcon, CloseIcon, VivoOlioLogo } from '../Icons/Icons.tsx';
 
 import PolicyModal from '../PolicyModal/PolicyModal.tsx';
 
-import { Modal } from 'react-bootstrap';
+import { Modal, Alert } from 'react-bootstrap';
+import { apiUrl } from '../config.ts';
 
 const LoginModal = ({ show, handleClose }) => {
    const [showPolicyModal, setShowPolicyModal] = useState(false);
@@ -29,6 +31,9 @@ const LoginModal = ({ show, handleClose }) => {
    const [email, setEmail] = useState("");
    const [password, setPassword] = useState("");
    const [confirmPassword, setConfirmPassword] = useState("");
+
+   const [message, setMessage] = useState<{ text: string, variant: string } | null>(null);
+   const [isFadingOut, setIsFadingOut] = useState(false);
 
    const handleShowPolicy = () => setShowPolicyModal(true);
    const handleClosePolicy = () => setShowPolicyModal(false);
@@ -49,13 +54,73 @@ const LoginModal = ({ show, handleClose }) => {
       setConfirmPassword(e.target.value);
    };
 
+   function isEmailValid(email: string): boolean {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailPattern.test(email);
+   }
+
    const handleClickSubmit = (e) => {
+      if (!isEmailValid(email)) {
+         setMessage({ text: "Invalid email.", variant: "danger" });
+         return;
+      }
+
       if (showForm == "Authorization") {
          handleShowForm("Enter your password");
       }
       else if (showForm == "Sign up") {
          handleShowForm("Create password");
+      } else if (showForm === "Create password") {
+         handleRegister();
+      } else {
+         handleLogin();
       }
+   };
+
+   const handleLogin = async () => {
+      const loginPayload = { Username: email.substring(0, email.indexOf('@')), Password: password };
+
+      axios.post(`${apiUrl}/api/auth/login`, loginPayload)
+         .then((response) => {
+            localStorage.setItem("token", response.data.token);
+            setEmail("");
+            setPassword("");
+            setMessage({ text: "Login successful!", variant: "success" });
+         })
+         .catch((error) => {
+            console.error(error);
+            setMessage({ text: "Login failed! The nickname or password is incorrect.", variant: "danger" });
+         });
+   };
+
+   const handleRegister = async () => {
+      if (!password || !confirmPassword) {
+         setMessage({ text: "Write the password.", variant: "danger" });
+         return;
+      }
+      if (password !== confirmPassword) {
+         setMessage({ text: "Passwords do not match.", variant: "danger" });
+         return;
+      }
+
+      const loginPayload = { Username: email.substring(0, email.indexOf('@')), Password: password };
+
+      console.log(loginPayload);
+      axios.post(`${apiUrl}/api/auth/login`, loginPayload)
+         .then((response) => {
+            if (response.status === 200) {
+               setMessage({ text: "Registration successful!", variant: "success" });
+               setEmail("");
+               setPassword("");
+               setConfirmPassword("");
+            } else {
+               setMessage({ text: "Registration failed. Please try again.", variant: "danger" });
+            }
+         })
+         .catch((e) => {
+            setMessage({ text: "An error occurred. Please try again.", variant: "danger" });
+            console.error(e);
+         });
    };
 
    useEffect(() => {
@@ -71,6 +136,24 @@ const LoginModal = ({ show, handleClose }) => {
       }
    }, [show]);
 
+   useEffect(() => {
+      if (message) {
+         const fadeOutTimer = setTimeout(() => {
+            setIsFadingOut(true);
+         }, 3000);
+
+         const removeMessageTimer = setTimeout(() => {
+            setMessage(null);
+            setIsFadingOut(false);
+         }, 4000);
+
+         return () => {
+            clearTimeout(fadeOutTimer);
+            clearTimeout(removeMessageTimer);
+         };
+      }
+   }, [message]);
+
    return (
       <Modal show={show} onHide={handleClose} centered>
          <Modal.Body style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "0 36px 0 36px" }}>
@@ -82,22 +165,37 @@ const LoginModal = ({ show, handleClose }) => {
                   </div>
                </LoginModalCloseButton>
             </LoginModalCloseContainer>
-            <OlioFullLogo style={{ backgroundImage: `url("https://yt3.googleusercontent.com/F4SqXRlQHbCoPrr29Cg_zvSNXlCxjVbN2jsP5qFlc1olTmNsfZlqViQ5FE_6yO8sIY2kcRtc6_o=s160-c-k-c0x00ffffff-no-rj")` }} />
+            <VivoOlioLogo />
             <LoginModalTitle>{showForm}</LoginModalTitle>
-            {showForm === "Authorization" || showForm === "Sign up" ? (
+            {(showForm === "Authorization" || showForm === "Sign up") && (
                <LoginModalEmailInput onChange={handleEmailChange} type="email" placeholder="Enter your email" required />
-            ) : null}
-            {showForm === "Enter your password" ? (
+            )}
+            {showForm === "Enter your password" && (
                <LoginModalPasswordInput onChange={handlePasswordChange} type="password" placeholder="Your password" required />
-            ) : null}
-            {showForm === "Create password" ? (
+            )}
+            {showForm === "Create password" && (
                <>
                   <LoginModalPasswordInput onChange={handlePasswordChange} type="password" placeholder="Enter your password" required />
                   <LoginModalPasswordInputConfirm onChange={handleConfirmPasswordChange} type="password" placeholder="Confirm your password" required />
                </>
-            ) : null}
+            )}
             <LoginModalSubmitButton onClick={handleClickSubmit} type="submit">Next</LoginModalSubmitButton>
-            {showForm === "Authorization" || showForm === "Sign up" ? (
+            {message && (
+               <Alert
+                  style={{
+                     opacity: isFadingOut ? 0 : 1,
+                     height: isFadingOut ? 0 : "58px",
+                     padding: isFadingOut ? 0 : 'auto',
+                     marginBottom: 0,
+                     overflow: "hidden",
+                     transition: "opacity 1s ease-in-out, height 1s ease-in-out, padding 1s ease-in-out",
+                  }}
+                  variant={message.variant}
+               >
+                  {message.text}
+               </Alert>
+            )}
+            {(showForm === "Authorization" || showForm === "Sign up") && (
                <>
                   <LoginModalDivider>
                      <LoginModalDividerLine />
@@ -113,7 +211,7 @@ const LoginModal = ({ show, handleClose }) => {
                      </LoginModalAppIcon>
                   </LoginModalAppIcons>
                </>
-            ) : null}
+            )}
             <LoginModalRegisterFooter>No account yet? <LoginModalRegisterButton onClick={handleShowPolicy} >Sign up</LoginModalRegisterButton></LoginModalRegisterFooter>
          </Modal.Body>
          <PolicyModal

@@ -2,10 +2,12 @@ import React, { FC } from 'react';
 
 interface IconProps {
     onClick?: () => void;
-    variant?: 'AppleIcon' | 'GoogleIcon' | 'PlanetIcon' | 'CloseIcon' | 'UserIcon' | 'GooglePlayIcon' | 'AppStoreIcon' | 'LeftArrowIcon' | 'CheckedIcon' | 'PublishNewsIcon';
+    variant?: 'VivoOlioLogo' | 'AppleIcon' | 'GoogleIcon' | 'PlanetIcon' | 'CloseIcon' | 'UserIcon' | 'GooglePlayIcon' | 'AppStoreIcon' | 'LeftArrowIcon' | 'CheckedIcon' | 'PublishNewsIcon';
 }
 
 const Icon: FC<IconProps> = ({ onClick, variant = 'CloseIcon' }) => {
+    const VivoOlio = require('./VivoOlio.png');
+
     switch (variant) {
         case 'AppleIcon':
             return (
@@ -88,7 +90,10 @@ const Icon: FC<IconProps> = ({ onClick, variant = 'CloseIcon' }) => {
                     <path d="M28.2857 19.7143H19.7143V28.2857C19.7143 28.7404 19.5337 29.1764 19.2122 29.4979C18.8907 29.8194 18.4547 30 18 30C17.5453 30 17.1093 29.8194 16.7878 29.4979C16.4663 29.1764 16.2857 28.7404 16.2857 28.2857V19.7143H7.71429C7.25963 19.7143 6.82359 19.5337 6.5021 19.2122C6.18061 18.8907 6 18.4547 6 18C6 17.5453 6.18061 17.1093 6.5021 16.7878C6.82359 16.4663 7.25963 16.2857 7.71429 16.2857H16.2857V7.71429C16.2857 7.25963 16.4663 6.82359 16.7878 6.5021C17.1093 6.18061 17.5453 6 18 6C18.4547 6 18.8907 6.18061 19.2122 6.5021C19.5337 6.82359 19.7143 7.25963 19.7143 7.71429V16.2857H28.2857C28.7404 16.2857 29.1764 16.4663 29.4979 16.7878C29.8194 17.1093 30 17.5453 30 18C30 18.4547 29.8194 18.8907 29.4979 19.2122C29.1764 19.5337 28.7404 19.7143 28.2857 19.7143Z" fill="#73843D" />
                 </svg>
             );
-
+        case 'VivoOlioLogo':
+            return (
+                <img src={VivoOlio} style={{ width: "126px", height: "126px"}}/>
+            );
     }
 };
 
@@ -102,3 +107,4 @@ export const AppStoreIcon = (props: Omit<IconProps, 'variant'>) => <Icon {...pro
 export const LeftArrowIcon = (props: Omit<IconProps, 'variant'>) => <Icon {...props} variant="LeftArrowIcon" />;
 export const CheckedIcon = (props: Omit<IconProps, 'variant'>) => <Icon {...props} variant="CheckedIcon" />;
 export const PublishNewsIcon = (props: Omit<IconProps, 'variant'>) => <Icon {...props} variant="PublishNewsIcon" />;
+export const VivoOlioLogo = (props: Omit<IconProps, 'variant'>) => <Icon {...props} variant="VivoOlioLogo" />;

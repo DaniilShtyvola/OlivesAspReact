@@ -36,7 +36,7 @@ import { OpenedCard, BigCard, MediumCard, DefaultCard } from '../Cards/Cards.tsx
 import LoginModal from '../LoginModal/LoginModal.tsx';
 import AdminPanel from '../AdminPanel/AdminPanel.tsx';
 
-import newsData from '../news.json';
+import { apiUrl } from '../config.ts';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faScrewdriverWrench } from '@fortawesome/free-solid-svg-icons'
@@ -69,11 +69,7 @@ const MainPage: FC<MainPageProps> = () => {
    useEffect(() => {
       const fetchNews = async () => {
          try {
-            const response = await axios.get('http://aspsmarteroil1-001-site1.ktempurl.com/api/news', {
-               headers: {
-                  "Authorization": 'Basic MTExOTU2OTk6NjAtZGF5ZnJlZXRyaWFs'
-               }
-            })
+            const response = await axios.get(`${apiUrl}/api/news`)
 
             const items = response.data as NewsItem[];
 

@@ -13,7 +13,12 @@ import {
    NewsTitle,
    NewsDate,
    NewsButtons,
-   NewsInformation
+   NewsInformation,
+   NewsTitleInput,
+   NewsContentInput,
+   NewsImageInput,
+   PublishNewsContainer,
+   SubmitButton
 } from './AdminPanel.styled.ts';
 
 import { PublishNewsIcon } from '../Icons/Icons.tsx';
@@ -21,9 +26,9 @@ import { PublishNewsIcon } from '../Icons/Icons.tsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
-import newsData from '../news.json';
+import { apiUrl } from '../config.ts';
 
-interface AdminPanelProps {}
+interface AdminPanelProps { }
 
 interface NewsItem {
    id: number;
@@ -39,21 +44,37 @@ const AdminPanel: FC<AdminPanelProps> = () => {
    const [searchString, setSearchString] = useState('');
    const [news, setNews] = useState<NewsItem[]>([]);
 
+   const [login, setLogin] = useState(false);
+   const [isAdmin, setIsAdmin] = useState(false);
+
+   const [publishNews, setPublishNews] = useState(false);
+
+   const [title, setTitle] = useState("");
+   const [content, setContent] = useState("");
+   const [image, setImage] = useState("");
+
    useEffect(() => {
       const fetchNews = async () => {
          try {
-            /*const response = await axios.get('http://aspsmarteroil1-001-site1.ktempurl.com/api/news', {
-               headers: {
-                  "Authorization": 'Basic MTExOTU2OTk6NjAtZGF5ZnJlZXRyaWFs'
+            const token = localStorage.getItem('token');
+            if (token) {
+               setLogin(true);
+
+               const isAdminResponse = await axios.get(`${apiUrl}/api/auth/me`, {
+                  headers: {
+                     "X-Key": `${token}`
+                  }
+               });
+
+               if (isAdminResponse.data.isAdmin) {
+                  setIsAdmin(true);
                }
-            })
 
-            const items = response.data as NewsItem[];
-            */
-           
-            const items = newsData as NewsItem[];
+               const response = await axios.get(`${apiUrl}/api/news`)
+               const items = response.data as NewsItem[];
 
-            setNews(items);
+               setNews(items);
+            }
          } catch (error) {
             console.error('Error fetching news data:', error);
          }
@@ -66,53 +87,104 @@ const AdminPanel: FC<AdminPanelProps> = () => {
       setSearchString(e.target.value);
    };
 
-   const handleDeleteNews = (id: number) => {
-      const updatedNews = news.filter((newsItem) => newsItem.id !== id);
-      setNews(updatedNews); // Delete news from array
+   const handleClickSubmit = (e) => {
+      // Publish news
+   };
+
+   const handleDeleteNews = async (id: number) => {
+      try {
+         const token = localStorage.getItem('token');
+         await axios.delete(`${apiUrl}/api/news/${id}`, {
+            headers: {
+               "X-Key": `${token}`
+            }
+         });
+         setNews(news.filter((newsItem) => newsItem.id !== id));
+      } catch (error) {
+         console.error("Error deleting news:", error);
+      }
    };
 
    const filteredNews = news.filter((newsItem) =>
       newsItem.title.toLowerCase().includes(searchString.toLowerCase())
    );
 
+   const handlePublishNews = () => {
+      setPublishNews(true);
+   };
+
+   const handleTitleChange = (e) => {
+      setTitle(e.target.value);
+   };
+
+   const handleContentChange = (e) => {
+      setContent(e.target.value);
+   };
+
+   const handleImageChange = (e) => {
+      setImage(e.target.value);
+   };
+
    return (
       <AdminPanelWrapper>
          <AdminPanelContainer>
-            <Title>
-               Admin <GreenText>panel</GreenText>
-            </Title>
-            <AdminPanelControls>
-               <SearchInput
-                  onChange={handleSearchStringChange}
-                  placeholder="Search..."
-               />
-               <PublishNewsButton>
-                  <PublishNewsIcon /> Publish news
-               </PublishNewsButton>
-            </AdminPanelControls>
-
-            {filteredNews.map((newsItem) => (
-               <NewsContainer key={newsItem.id}>
-                  <NewsInformation>
-                     <NewsImage src={newsItem.image} alt={newsItem.title} />
-                     <NewsTitle>{newsItem.title}</NewsTitle>
-                     <NewsDate>
-                        {new Date(newsItem.publishDate).toLocaleDateString()}
-                     </NewsDate>
-                  </NewsInformation>
-                  <NewsButtons>
-                     <FontAwesomeIcon
-                        style={{
-                           fontSize: '120%',
-                           color: '#73843D',
-                           cursor: 'pointer',
-                        }}
-                        icon={faTrash}
-                        onClick={() => handleDeleteNews(newsItem.id)}
+            {!publishNews && login && isAdmin && (
+               <>
+                  <Title>
+                     Admin <GreenText>panel</GreenText>
+                  </Title>
+                  <AdminPanelControls>
+                     <SearchInput
+                        onChange={handleSearchStringChange}
+                        placeholder="Search..."
                      />
-                  </NewsButtons>
-               </NewsContainer>
-            ))}
+                     <PublishNewsButton onClick={handlePublishNews}>
+                        <PublishNewsIcon /> Publish news
+                     </PublishNewsButton>
+                  </AdminPanelControls>
+
+                  {filteredNews.map((newsItem) => (
+                     <NewsContainer key={newsItem.id}>
+                        <NewsInformation>
+                           <NewsImage src={newsItem.image} alt={newsItem.title} />
+                           <NewsTitle>{newsItem.title}</NewsTitle>
+                           <NewsDate>
+                              {new Date(newsItem.publishDate).toLocaleDateString()}
+                           </NewsDate>
+                        </NewsInformation>
+                        <NewsButtons>
+                           <FontAwesomeIcon
+                              style={{
+                                 fontSize: '120%',
+                                 color: '#73843D',
+                                 cursor: 'pointer',
+                              }}
+                              icon={faTrash}
+                              onClick={() => handleDeleteNews(newsItem.id)}
+                           />
+                        </NewsButtons>
+                     </NewsContainer>
+                  ))}
+               </>
+            )}
+            {publishNews && login && isAdmin && (
+               <>
+                  <Title>
+                     Publish <GreenText>news</GreenText>
+                  </Title>
+                  <PublishNewsContainer>
+                     <NewsTitleInput onChange={handleTitleChange} placeholder="Enter news title"></NewsTitleInput>
+                     <NewsContentInput onChange={handleContentChange} placeholder="Enter news content"></NewsContentInput>
+                     <NewsImageInput onChange={handleImageChange} placeholder="Add a link to a cover photo"></NewsImageInput>
+                  </PublishNewsContainer>
+                  <SubmitButton onClick={handleClickSubmit} type="submit">Publish</SubmitButton>
+               </>
+            )}
+            {(!login || !isAdmin) && (
+               <Title>
+                  Only <GreenText>admins</GreenText> can use this
+               </Title>
+            )}
          </AdminPanelContainer>
       </AdminPanelWrapper>
    );
