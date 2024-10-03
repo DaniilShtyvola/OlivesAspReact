@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { useNavigate } from 'react-router-dom'; // Импортируйте useNavigate
 import {
    DefaultCardWrapper, 
    DefaultNewsPicture, 
@@ -57,11 +58,21 @@ interface News {
 
 interface CardProps {
    news: News;
-   onClick?: () => void;
    variant?: 'default' | 'big' | 'medium' | 'opened';
 }
 
-const Card: FC<CardProps> = ({ news, onClick, variant = 'default' }) => {
+const Card: FC<CardProps> = ({ news, variant = 'default' }) => {
+   const navigate = useNavigate();
+
+   const handleClick = () => {
+      //window.openedNews = news;
+      
+      //const event = new CustomEvent('openedNewsChange');
+      //window.dispatchEvent(event);
+
+      navigate(`/News/${news.id}`);
+   };
+
    const formattedDate = new Date(news.publishDate).toLocaleDateString();
    const formattedTime = new Date(news.publishDate).toLocaleTimeString([], {
       hour: '2-digit',
@@ -71,7 +82,7 @@ const Card: FC<CardProps> = ({ news, onClick, variant = 'default' }) => {
    switch (variant) {
       case 'big':
          return (
-            <BigCardWrapper onClick={onClick}>
+            <BigCardWrapper onClick={handleClick}>
                <BigNewsPicture style={{ backgroundImage: `url(${news.image})` }} />
                <BigInfoContainer>
                   <BigTitle>{news.title}</BigTitle>
@@ -88,7 +99,7 @@ const Card: FC<CardProps> = ({ news, onClick, variant = 'default' }) => {
          );
       case 'medium':
          return (
-            <MediumCardWrapper onClick={onClick}>
+            <MediumCardWrapper onClick={handleClick}>
                <MediumNewsPicture style={{ backgroundImage: `url(${news.image})` }} />
                <MediumInfoContainer>
                   <MediumTitle>{news.title}</MediumTitle>
@@ -121,7 +132,7 @@ const Card: FC<CardProps> = ({ news, onClick, variant = 'default' }) => {
          );
       default:
          return (
-            <DefaultCardWrapper onClick={onClick}>
+            <DefaultCardWrapper onClick={handleClick}>
                <DefaultNewsPicture style={{ backgroundImage: `url(${news.image})` }} />
                <DefaultInfoContainer>
                   <DefaultTitle>{news.title}</DefaultTitle>

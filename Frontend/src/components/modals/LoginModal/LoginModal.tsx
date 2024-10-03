@@ -3,7 +3,6 @@ import axios from 'axios';
 import {
    LoginModalCloseContainer,
    LoginModalCloseButton,
-   OlioFullLogo,
    LoginModalTitle,
    LoginModalEmailInput,
    LoginModalSubmitButton,
@@ -17,12 +16,12 @@ import {
    LoginModalPasswordInputConfirm
 } from './LoginModal.styled.ts';
 
-import { AppleIcon, GoogleIcon, CloseIcon, VivoOlioLogo } from '../Icons/Icons.tsx';
+import { AppleIcon, GoogleIcon, CloseIcon, VivoOlioLogo } from '../../elements/Icons/Icons.tsx';
 
 import PolicyModal from '../PolicyModal/PolicyModal.tsx';
 
 import { Modal, Alert } from 'react-bootstrap';
-import { apiUrl } from '../config.ts';
+import { apiUrl } from '../../config.ts';
 
 const LoginModal = ({ show, handleClose }) => {
    const [showPolicyModal, setShowPolicyModal] = useState(false);
@@ -34,6 +33,8 @@ const LoginModal = ({ show, handleClose }) => {
 
    const [message, setMessage] = useState<{ text: string, variant: string } | null>(null);
    const [isFadingOut, setIsFadingOut] = useState(false);
+
+   const [language, setLanguage] = useState(window.pageLanguage || "EN");
 
    const handleShowPolicy = () => setShowPolicyModal(true);
    const handleClosePolicy = () => setShowPolicyModal(false);
@@ -78,19 +79,36 @@ const LoginModal = ({ show, handleClose }) => {
    };
 
    const handleLogin = async () => {
-      const loginPayload = { Username: email.substring(0, email.indexOf('@')), Password: password };
+      try {
+         const loginPayload = {
+            Username: email.substring(0, email.indexOf('@')),
+            Password: password
+         };
 
-      axios.post(`${apiUrl}/api/auth/login`, loginPayload)
-         .then((response) => {
-            localStorage.setItem("token", response.data.token);
-            setEmail("");
-            setPassword("");
-            setMessage({ text: "Login successful!", variant: "success" });
-         })
-         .catch((error) => {
-            console.error(error);
-            setMessage({ text: "Login failed! The nickname or password is incorrect.", variant: "danger" });
+         const response = await axios.post(`${apiUrl}/api/auth/login`, loginPayload);
+         localStorage.setItem("token", response.data.token);
+
+         setEmail("");
+         setPassword("");
+
+         setMessage({ text: "Login successful!", variant: "success" });
+
+         const isAdminResponse = await axios.get(`${apiUrl}/api/auth/me`, {
+            headers: {
+               "X-Key": localStorage.getItem("token") || ""
+            }
          });
+
+         if (isAdminResponse.data.isAdmin) {
+            window.loggedInAsAdmin = true;
+
+            const event = new CustomEvent('adminLoggedIn');
+            window.dispatchEvent(event);
+         }
+      } catch (error) {
+         console.error(error);
+         setMessage({ text: "Login failed! The nickname or password is incorrect.", variant: "danger" });
+      }
    };
 
    const handleRegister = async () => {
@@ -137,6 +155,14 @@ const LoginModal = ({ show, handleClose }) => {
    }, [show]);
 
    useEffect(() => {
+      const handleLanguageUpdate = (event: any) => {
+         setLanguage(window.pageLanguage);
+      };
+
+      window.addEventListener("languageChange", handleLanguageUpdate);
+   }, []);
+
+   useEffect(() => {
       if (message) {
          const fadeOutTimer = setTimeout(() => {
             setIsFadingOut(true);
@@ -154,6 +180,20 @@ const LoginModal = ({ show, handleClose }) => {
       }
    }, [message]);
 
+   function topModalText(): string {
+      if (window.pageLanguage == "EN")
+         return showForm;
+
+      if (showForm == "Authorization") {
+         return "Авторизація";
+      } else if (showForm == "Enter your password") {
+         return "Введіть ваш пароль";
+      } else if (showForm == "Create password") {
+         return "Створіть пароль";
+      } 
+      return "Реєстрація";
+   }
+
    return (
       <Modal show={show} onHide={handleClose} centered>
          <Modal.Body style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "0 36px 0 36px" }}>
@@ -166,20 +206,20 @@ const LoginModal = ({ show, handleClose }) => {
                </LoginModalCloseButton>
             </LoginModalCloseContainer>
             <VivoOlioLogo />
-            <LoginModalTitle>{showForm}</LoginModalTitle>
+            <LoginModalTitle>{topModalText()}</LoginModalTitle>
             {(showForm === "Authorization" || showForm === "Sign up") && (
-               <LoginModalEmailInput onChange={handleEmailChange} type="email" placeholder="Enter your email" required />
+               <LoginModalEmailInput onChange={handleEmailChange} type="email" placeholder={language == "EN" ? "Enter your email" : "Введіть пошту"} required />
             )}
             {showForm === "Enter your password" && (
-               <LoginModalPasswordInput onChange={handlePasswordChange} type="password" placeholder="Your password" required />
+               <LoginModalPasswordInput onChange={handlePasswordChange} type="password" placeholder={language == "EN" ? "Your password" : "Ваш пароль"} required />
             )}
             {showForm === "Create password" && (
                <>
-                  <LoginModalPasswordInput onChange={handlePasswordChange} type="password" placeholder="Enter your password" required />
-                  <LoginModalPasswordInputConfirm onChange={handleConfirmPasswordChange} type="password" placeholder="Confirm your password" required />
+                  <LoginModalPasswordInput onChange={handlePasswordChange} type="password" placeholder={language == "EN" ? "Enter your password" : "Введіть пароль"} required />
+                  <LoginModalPasswordInputConfirm onChange={handleConfirmPasswordChange} type="password" placeholder={language == "EN" ? "Confirm your password" : "Підтвердіть пароль"} required />
                </>
             )}
-            <LoginModalSubmitButton onClick={handleClickSubmit} type="submit">Next</LoginModalSubmitButton>
+            <LoginModalSubmitButton onClick={handleClickSubmit} type="submit">{language == "EN" ? "Next" : "Далі"}</LoginModalSubmitButton>
             {message && (
                <Alert
                   style={{
@@ -196,10 +236,10 @@ const LoginModal = ({ show, handleClose }) => {
                </Alert>
             )}
             {(showForm === "Authorization" || showForm === "Sign up") && (
-               <>
+               <>                  с
                   <LoginModalDivider>
                      <LoginModalDividerLine />
-                     Or
+                     {language == "EN" ? "Or" : "Або"}
                      <LoginModalDividerLine />
                   </LoginModalDivider>
                   <LoginModalAppIcons>
@@ -212,7 +252,7 @@ const LoginModal = ({ show, handleClose }) => {
                   </LoginModalAppIcons>
                </>
             )}
-            <LoginModalRegisterFooter>No account yet? <LoginModalRegisterButton onClick={handleShowPolicy} >Sign up</LoginModalRegisterButton></LoginModalRegisterFooter>
+            <LoginModalRegisterFooter>{language == "EN" ? "No account yet?" : "Немає аккаунту?"} <LoginModalRegisterButton onClick={handleShowPolicy} >{language == "EN" ? "Sign up" : "Зареєструйся"}</LoginModalRegisterButton></LoginModalRegisterFooter>
          </Modal.Body>
          <PolicyModal
             show={showPolicyModal}

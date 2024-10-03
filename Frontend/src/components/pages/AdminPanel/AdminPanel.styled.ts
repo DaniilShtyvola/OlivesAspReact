@@ -68,19 +68,20 @@ height: 64px;
 `;
 
 export const NewsTitle = styled.p`
-font-weight: 600;
-width: 200px;
+font-weight: 700;
+width: 260px;
 font-size: 95%;
 margin: 0 12px 0 12px;
 `;
 
 export const NewsDate = styled.p`
-margin: 0;
+margin: 0 0 0 12px;
 `;
 
 export const NewsButtons = styled.div`
 display: flex;
 align-items: center;
+margin-right: 32px;
 `;
 
 export const NewsInformation = styled.div`
@@ -88,67 +89,36 @@ display: flex;
 align-items: center;
 `;
 
-export const NewsTitleInput = styled.textarea`
-padding: 8px 12px;
-border-radius: 8px;
-width: 340px;
-height: 80px;
-border: 1px solid #ccc;
-font-size: 16px;
-
-&:focus {
-    outline: none;
-    border-color: #73843D;
-}
+export const NewsContent = styled.p`
+width: 260px;
+height: 22px;
+font-size: 75%;
+margin: 0 12px 0 12px;
+overflow: hidden;
+text-overflow: ellipsis;
+white-space: nowrap;
 `;
 
-export const NewsContentInput = styled.textarea`
-padding: 8px 12px;
-border-radius: 8px;
-height: 440px;
+export const AdminPanelHints = styled.div`
+display: flex;
+justify-content: space-between;
 margin-top: 12px;
-width: 340px;
-border: 1px solid #ccc;
-font-size: 16px;
-
-&:focus {
-    outline: none;
-    border-color: #73843D;
-}
 `;
 
-export const NewsImageInput = styled.input`
-padding: 8px 12px;
-border-radius: 8px;
-width: 340px;
-border: 1px solid #ccc;
-margin-top: 12px;
-font-size: 16px;
-
-&:focus {
-    outline: none;
-    border-color: #73843D;
-}
+export const NewsHint = styled.h5`
+margin: 0;
+font-weight: 700;
+margin-left: 32px;
 `;
 
-export const PublishNewsContainer = styled.div`
-display: flex; 
-flex-direction: column;
+export const ButtonsHint = styled.h5`
+margin: 0;
+font-weight: 700;
+margin-right: 58px;
 `;
 
-export const SubmitButton = styled.button`
-width: 168px;
-padding: 8px;
-margin: 12px 86px 0 86px;
-border-radius: 8px;
-background-color: #73843D;
-border: none;
-color: white;
-font-size: 16px;
-margin-bottom: 20px;
-cursor: pointer;
-
-&:hover {
-    background-color: #5f6d31;
-}
+export const DateHint = styled.h5`
+margin: 0;
+font-weight: 700;
+margin-left: 358px;
 `;

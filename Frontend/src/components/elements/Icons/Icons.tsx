@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 
 interface IconProps {
     onClick?: () => void;
-    variant?: 'VivoOlioLogo' | 'AppleIcon' | 'GoogleIcon' | 'PlanetIcon' | 'CloseIcon' | 'UserIcon' | 'GooglePlayIcon' | 'AppStoreIcon' | 'LeftArrowIcon' | 'CheckedIcon' | 'PublishNewsIcon';
+    variant?: 'DefaultImage' | 'VivoOlioLogo' | 'EditIcon' | 'AppleIcon' | 'GoogleIcon' | 'PlanetIcon' | 'CloseIcon' | 'UserIcon' | 'GooglePlayIcon' | 'AppStoreIcon' | 'LeftArrowIcon' | 'CheckedIcon' | 'PublishNewsIcon';
 }
 
 const Icon: FC<IconProps> = ({ onClick, variant = 'CloseIcon' }) => {
@@ -92,7 +92,7 @@ const Icon: FC<IconProps> = ({ onClick, variant = 'CloseIcon' }) => {
             );
         case 'VivoOlioLogo':
             return (
-                <img src={VivoOlio} style={{ width: "126px", height: "126px"}}/>
+                <img src={VivoOlio} style={{ width: "126px", height: "126px" }} />
             );
     }
 };

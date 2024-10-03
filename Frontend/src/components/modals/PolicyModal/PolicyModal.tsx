@@ -11,7 +11,7 @@ import {
    CheckBox
 } from './PolicyModal.styled.ts';
 
-import { LeftArrowIcon, CheckedIcon } from '../Icons/Icons.tsx';
+import { LeftArrowIcon, CheckedIcon } from '../../elements/Icons/Icons.tsx';
 
 import { Modal } from 'react-bootstrap';
 

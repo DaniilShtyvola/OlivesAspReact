@@ -1,5 +1,61 @@
 import styled from 'styled-components';
 
+export const MainPageWrapper = styled.div`
+font-family: 'Montserrat', sans-serif;
+`;
+
+export const NewsContainer = styled.div`
+width: 1120px;
+`;
+
+export const News = styled.div`
+width: 100%;
+display: flex;
+justify-content: center;
+`;
+
+export const NewsTitle = styled.h1`
+margin: 32px 0 8px 0;
+font-size: 240%;
+font-weight: 700;
+`;
+
+export const GreenText = styled.span`
+color: #73843D;
+`;
+
+export const TodayNewsCardsContainer = styled.div`
+display: flex;
+justify-content: space-between;
+padding-bottom: 32px;
+border-bottom: solid 3px #D9D9D9;
+`;
+
+export const NewsRightSide = styled.div`
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+`;
+
+export const NewsFeedCardsContainer = styled.div`
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+grid-gap: 22px;
+width: 100%;
+margin-bottom: 44px;
+`;
+
+export const LoginModalCloseContainer = styled.div`
+display: flex;
+justify-content: space-between;
+width: 100%;
+padding: 0 12px 0 20px;
+margin-top: 12px;
+`;
+
+export const LoginModalCloseButton = styled.div`
+`;
+
 export const OlioFullLogo = styled.div`
 width: 126px;
 height: 126px;
@@ -98,41 +154,7 @@ background-color: #BDBDBD;
 margin: 0 12px 0 12px;
 `;
 
-export const LoginModalCloseContainer = styled.div`
+export const CategoriesContainer = styled.div`
 display: flex;
-justify-content: space-between;
-width: 100%;
-padding: 0 12px 0 20px;
-margin-top: 12px;
 `;
 
-export const LoginModalCloseButton = styled.div`
-`;
-
-export const LoginModalPasswordInput = styled.input`
-width: 100%;
-padding: 12px 15px;
-border-radius: 8px;
-border: 1px solid #ccc;
-font-size: 16px;
-margin: 20px 0 20px 0;
-
-&:focus {
-    outline: none;
-    border-color: #73843D;
-}
-`;
-
-export const LoginModalPasswordInputConfirm = styled.input`
-width: 100%;
-padding: 12px 15px;
-border-radius: 8px;
-border: 1px solid #ccc;
-font-size: 16px;
-margin: 0 0 20px 0;
-
-&:focus {
-    outline: none;
-    border-color: #73843D;
-}
-`;

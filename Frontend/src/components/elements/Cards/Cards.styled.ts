@@ -7,7 +7,7 @@ justify-content: space-between;
 user-select: none;
 cursor: pointer;
 &:hover {
-    h2 {
+    h3 {
       color: gray;
     }
   }
@@ -21,7 +21,7 @@ justify-content: space-between;
 margin: 6px 0 6px 0;
 `;
 
-export const DefaultTitle = styled.h2`
+export const DefaultTitle = styled.h3`
 margin: 0;
 transition: color 0.2s ease-in-out;
 `;
